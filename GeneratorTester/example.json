@@ -1,0 +1,18 @@
+{
+  "Numbers": {
+    "IntValue": 42,
+    "LargeIntValue": 5000000000,
+    "DecimalValue": 3.1415
+  },
+  "Strings": {
+    "Greeting": "Hello world"
+  },
+  "Flags": {
+    "IsEnabled": true
+  },
+  //A comment placed above a property is copied in the node tree
+  "EmptyObject": {},
+  "NullValue": null,
+  "EmptyArray": [],
+  "Permissions": [ "Read", "Write", "Delete" ]
+}
