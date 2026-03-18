@@ -2,8 +2,8 @@
 
 namespace GeneratorTester
 {
-    [JsonConstGenerator("example.json", "example2.json", Seperator = "/")]
-    public class MyClass
+    [JsonConstGenerator("example.json")]
+    public partial class MyClass
     {
 
     }

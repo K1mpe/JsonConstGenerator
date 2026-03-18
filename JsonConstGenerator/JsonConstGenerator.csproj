@@ -8,6 +8,7 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
 		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\Generated</CompilerGeneratedFilesOutputPath>
+		<IsRoslynComponent>true</IsRoslynComponent>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -19,8 +20,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Compile Include="Diagnostics.cs" />
+		<Compile Include="GeneratorInput.cs" />
+		<Compile Include="Helpers\GeneratorHelper.cs" />
+		<Compile Include="Helpers\JsonMerger.cs" />
 		<Compile Include="Helpers\MiniJSON.cs" />
 		<Compile Include="JsonConstGenerator.cs" />
+		<Compile Include="Validation.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -30,6 +36,9 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" Version="4.13.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" Version="4.13.0" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\JsonConstGenerator.Abstraction\JsonConstGenerator.Abstraction.csproj" />
 	</ItemGroup>
 </Project>
 

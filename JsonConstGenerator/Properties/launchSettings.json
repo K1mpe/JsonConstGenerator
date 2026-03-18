@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "JsonConstGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": "/rootSuffix Exp"
+    }
+  }
+}

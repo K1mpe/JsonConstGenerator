@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\JsonConstGenerator.Abstraction\JsonConstGenerator.Abstraction.csproj" />
+    <ProjectReference Include="..\JsonConstGenerator\JsonConstGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
 </Project>
