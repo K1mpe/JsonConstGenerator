@@ -148,8 +148,47 @@ namespace SourceNamespace
 
         
 
-        public static IEnumerable<IConstNode> GetAllNodes() => _allNodes;
-        public static IEnumerable<IConstNode> GetAllEndNodes() => _allEndNodes;
+        public static IEnumerable<IConstNode> GetAllNodes() 
+        {
+            foreach (var node in _allNodes)
+                yield return node;
+
+            foreach (var child in Strings.GetAllNodes())
+                yield return child;
+
+            foreach (var child in Flags.GetAllNodes())
+                yield return child;
+
+            foreach (var child in Permissions.GetAllNodes())
+                yield return child;
+
+            foreach (var child in Numbers.GetAllNodes())
+                yield return child;
+
+            foreach (var child in Numbers.GetAllNodes())
+                yield return child;
+
+        }
+        public static IEnumerable<IConstNode> GetAllEndNodes() 
+        {
+            foreach (var node in _allEndNodes)
+                yield return node;
+
+            foreach (var child in Strings.GetAllEndNodes())
+                yield return child;
+
+            foreach (var child in Flags.GetAllEndNodes())
+                yield return child;
+
+            foreach (var child in Permissions.GetAllEndNodes())
+                yield return child;
+
+            foreach (var child in Numbers.GetAllEndNodes())
+                yield return child;
+
+            foreach (var child in Numbers.GetAllEndNodes())
+                yield return child;
+        }
 
         ///<summary>
         /// A function that finds a single node
@@ -165,35 +204,19 @@ namespace SourceNamespace
         private static readonly IConstNode[] _allNodes = 
         { 
             Numbers, 
-            Numbers.IntValue, 
-            Numbers.LargeIntValue, 
-            Numbers.DecimalValue, 
             Strings, 
-            Strings.Greeting, 
             Flags, 
-            Flags.IsEnabled, 
             EmptyObject, 
             NullValue, 
             EmptyArray, 
             Permissions, 
-            Permissions.Read, 
-            Permissions.Write, 
-            Permissions.Delete 
          }; 
 
         private static readonly IConstNode[] _allEndNodes = 
         { 
-            Numbers.IntValue, 
-            Numbers.LargeIntValue, 
-            Numbers.DecimalValue, 
-            Strings.Greeting, 
-            Flags.IsEnabled, 
             EmptyObject, 
             NullValue, 
             EmptyArray, 
-            Permissions.Read, 
-            Permissions.Write, 
-            Permissions.Delete 
          }; 
     } 
 }

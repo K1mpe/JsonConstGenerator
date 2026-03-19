@@ -2,9 +2,13 @@
 
 namespace GeneratorTester
 {
-    [JsonConstGenerator("example.json")]
-    public partial class MyClass
+    [JsonConstGenerator("*.json")]
+    public partial class MyConstants
     {
+        public static void Blub()
+        {
+            var x = Flags.IsEnabled;
 
+        }
     }
 }

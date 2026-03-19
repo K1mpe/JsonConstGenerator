@@ -31,7 +31,6 @@
 
 	<ItemGroup>
 	  <None Include="README.md" />
-	  <None Include="README_old.md" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" Version="4.13.0" />

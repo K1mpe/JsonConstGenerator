@@ -39,4 +39,13 @@ internal static class Diagnostics
             category: "JsonConstGenerator",
             defaultSeverity: DiagnosticSeverity.Error,
             isEnabledByDefault: true);
+
+    public static readonly DiagnosticDescriptor JsonParseError =
+    new DiagnosticDescriptor(
+        id: "JCG005",
+        title: "JSON file cannot be parsed",
+        messageFormat: "The JSON file '{0}' could not be parsed as a valid JSON object",
+        category: "JsonConstGenerator",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true);
 }

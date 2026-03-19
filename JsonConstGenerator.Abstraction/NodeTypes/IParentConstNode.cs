@@ -17,4 +17,10 @@ public interface IParentConstNode : IConstNode
     /// </summary>
     /// <returns></returns>
     public IEnumerable<IConstNode> GetChildNodesRecursive();
+
+    /// <summary>
+    /// Returns all the child end nodes of this parent, but also include sub children. An end node is a node that does not have any child nodes
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerable<IConstNode> GetChildEndNodesRecursive();
 }
