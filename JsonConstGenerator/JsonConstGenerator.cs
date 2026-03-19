@@ -138,10 +138,8 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
             // wildcard support
             if (absolutePath.Contains("*") || absolutePath.Contains("?"))
             {
-                var dir = Path.GetDirectoryName(absolutePath) ?? projectDir;
-                var pattern = Path.GetFileName(absolutePath);
-                var matches = Directory.GetFiles(dir, pattern);
-                if(matches.Length == 0)
+                var matches = ResolveWildcardPath(projectDir, path);
+                if (matches.Length == 0)
                 {
                     ReportMissingFile(path, projectDir);
                     continue;
@@ -163,7 +161,6 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
         {
             var attrSyntax = input.Attribute.ApplicationSyntaxReference?.GetSyntax() as AttributeSyntax;
             Location location = attrSyntax?.GetLocation() ?? Location.None;
-            // Report diagnostic for missing file
             var diag = Diagnostic.Create(
                 Diagnostics.MissingJsonFileDescriptor,
                 location,
@@ -171,6 +168,72 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
                 dir);
             spc.ReportDiagnostic(diag);
         }
+
+        string[] ResolveWildcardPath(string baseDir, string relativePath)
+        {
+            //if (!Debugger.IsAttached) Debugger.Launch();
+            // Normalize path separators
+            relativePath = relativePath.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+            var segments = relativePath.Split(Path.DirectorySeparatorChar);
+
+            // Start with the base directory
+            var currentPaths = new List<string> { baseDir };
+
+            for (int i = 0; i < segments.Length; i++)
+            {
+                var segment = segments[i];
+                var isLastSegment = i == segments.Length - 1;
+                var nextPaths = new List<string>();
+
+                foreach (var currentPath in currentPaths)
+                {
+                    if (!Directory.Exists(currentPath))
+                        continue;
+
+                    if (segment.Contains("*"))
+                    {
+                        if (isLastSegment)
+                        {
+                            // File pattern
+                            try
+                            {
+                                nextPaths.AddRange(Directory.GetFiles(currentPath, segment));
+                            }
+                            catch { /* ignore inaccessible directories */ }
+                        }
+                        else
+                        {
+                            // Directory pattern
+                            try
+                            {
+                                nextPaths.AddRange(Directory.GetDirectories(currentPath, segment));
+                            }
+                            catch { /* ignore inaccessible directories */ }
+                        }
+                    }
+                    else
+                    {
+                        // Exact match
+                        var combined = Path.Combine(currentPath, segment);
+                        if (isLastSegment)
+                        {
+                            if (File.Exists(combined))
+                                nextPaths.Add(combined);
+                        }
+                        else
+                        {
+                            if (Directory.Exists(combined))
+                                nextPaths.Add(combined);
+                        }
+                    }
+                }
+
+                currentPaths = nextPaths;
+            }
+
+            return currentPaths.ToArray();
+        }
+
     }
 
 
@@ -289,7 +352,7 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
 
             foreach (var item in dict)
             {
-                GenerateChildInitializer(item.Key, item.Value, sb, sb2, indentLevel + 1, $"{path}{separator}{item.Key}", separator, childEndNodes, childParentNodes, generatedClasses);
+                GenerateChildInitializer(item.Key, item.Value, sb, sb2, indentLevel + 1, $"{path}{separator}{item.Key}", separator, camelCase, childEndNodes, childParentNodes, generatedClasses);
             }
 
             sb.AppendLine($"{indent}}};");
@@ -341,11 +404,21 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
         }
         else
         {
+            var (typeName, valueString) = GetValueTypeAndLiteral(value);
+            
+
             // Primitive value
             endNodes.Add(name);
-            var (typeName, valueString) = GetValueTypeAndLiteral(value);
             GeneratePropertySummary(sb, value, path);
-            sb.AppendLine($"{indent}public static readonly ValueConstNode<{typeName}> {name} = new(\"{path}\", {valueString});");
+            if (typeName == "object")
+            {
+                sb.AppendLine($"{indent}public static readonly ValueLessConstNode {name} = new(\"{path}\");");
+            }
+            else
+            {
+                sb.AppendLine($"{indent}public static readonly ValueConstNode<{typeName}> {name} = new(\"{path}\", {valueString});");
+            }
+            
             sb.AppendLine();
         }
     }
@@ -358,6 +431,7 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
         int indentLevel,
         string path,
         string separator,
+        bool camelCase,
         List<string> endNodes,
         List<string> parentNodes,
         HashSet<string> generatedClasses)
@@ -366,6 +440,10 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
 
         if (value is Dictionary<string, object> dict && dict.Any())
         {
+            if (camelCase)
+            {
+                dict = dict.ToDictionary(kvp => char.ToUpper(kvp.Key[0]) + kvp.Key.Substring(1), kvp => kvp.Value);
+            }
             parentNodes.Add(name);
             string className = $"{name}ConstNode";
 
@@ -377,7 +455,7 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
 
             foreach (var item in dict)
             {
-                GenerateChildInitializer(item.Key, item.Value, sb, sb2, indentLevel + 1, $"{path}{separator}{item.Key}", separator, childEndNodes, childParentNodes, generatedClasses);
+                GenerateChildInitializer(item.Key, item.Value, sb, sb2, indentLevel + 1, $"{path}{separator}{item.Key}", separator, camelCase, childEndNodes, childParentNodes, generatedClasses);
             }
 
             sb.AppendLine($"{indent}}},");
@@ -417,12 +495,15 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
         {
             endNodes.Add(name);
 
-            var (_, valueString) = GetValueTypeAndLiteral(value);
             if (path == name) // Top-level node, include type and value in summary, child nodes have their summaries in their subclasses
                 GeneratePropertySummary(sb, value, path);
 
-            
-            sb.AppendLine($"{indent}{name} = new(\"{path}\", {valueString}),");
+            var (valueType, valueString) = GetValueTypeAndLiteral(value);
+
+            if (valueType == "object")
+                sb.AppendLine($"{indent}{name} = new(\"{path}\"),");
+            else
+                sb.AppendLine($"{indent}{name} = new(\"{path}\", {valueString}),");
         }
     }
 
@@ -512,6 +593,7 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
             // Generate XML summary
             GeneratePropertySummary(sb2, item.Value, $"{path}{separator}{item.Key}");
             sb2.AppendLine($"        public {propType} {item.Key} {{ get; init; }}");
+            sb2.AppendLine();
         }
 
         sb2.AppendLine();
@@ -572,7 +654,7 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
             "long" => "ValueConstNode<long>",
             "double" => "ValueConstNode<double>",
             "string" => "ValueConstNode<string>",
-            _ => "ValueConstNode<object>"
+            _ => "ValueLessConstNode"
         };
     }
 
@@ -643,7 +725,10 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
             !(value is List<object>))
         {
             var (typeName, literalValue) = GetValueTypeAndLiteral(value);
-            sb2.AppendLine($"        /// <para>Type: <c>{typeName}</c>  {EscapeXmlValue("->")}  <c>{EscapeXmlValue(literalValue)}</c></para>");
+            if(typeName == "object")
+                sb2.AppendLine($"        /// <para>Type: <c>unsupported object</c>");
+            else
+                sb2.AppendLine($"        /// <para>Type: <c>{typeName}</c>  {EscapeXmlValue("->")}  <c>{EscapeXmlValue(literalValue)}</c></para>");
         }
 
         sb2.AppendLine($"        /// </summary>");

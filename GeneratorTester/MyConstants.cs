@@ -2,9 +2,13 @@
 
 namespace GeneratorTester
 {
-    [JsonConstGenerator("example.json", "example2.json", UpperCamelCase = true)]
+    [JsonConstGenerator("SubFolder/*.json", "*.json", UpperCamelCase = true)]
     public partial class MyConstants
     {
+
+        private void Method()
+        {
+        }
     }
 
 
@@ -16,6 +20,7 @@ namespace GeneratorTester
             var y = MyConstants.FromSecondExample;
 
             string[] permissions = MyConstants.Permissions;
+
         }
     }
 }
