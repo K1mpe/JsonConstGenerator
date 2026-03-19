@@ -69,6 +69,8 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
         var modifiers = GeneratorHelper.GetClassModifiers(input.ClassSymbol);
         var namespaceName = GeneratorHelper.GetNamespace(input.ClassSymbol);
         var className = input.ClassSymbol.Name;
+        var seperator = GeneratorHelper.GetOptionalPropertyFromAttribute(input.Attribute, "Separator", ".");
+        var camelCase = GeneratorHelper.GetOptionalPropertyFromAttribute(input.Attribute, "UpperCamelCase", false);
 
         var projectDir = Path.GetDirectoryName(input.ClassSymbol.ContainingAssembly.Locations.FirstOrDefault()?.SourceTree?.FilePath)
                  ?? Directory.GetCurrentDirectory();
@@ -111,7 +113,7 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
 
 
         // Generate content from the merged dictionary
-        GenerateFromMergedJson(dict, sb, sb2);
+        GenerateFromMergedJson(dict, sb, sb2, seperator, camelCase);
 
         sb.AppendLine($"    }}");
         sb.AppendLine($"}}");
@@ -141,7 +143,7 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
                 var matches = Directory.GetFiles(dir, pattern);
                 if(matches.Length == 0)
                 {
-                    ReportMissingFile(path);
+                    ReportMissingFile(path, projectDir);
                     continue;
                 }
                 resolvedFiles.AddRange(matches);
@@ -152,12 +154,12 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
             }
             else
             {
-                ReportMissingFile(path);
+                ReportMissingFile(path, projectDir);
             }
         }
         return resolvedFiles.Distinct().ToArray();
 
-        void ReportMissingFile(string path)
+        void ReportMissingFile(string path, string dir)
         {
             var attrSyntax = input.Attribute.ApplicationSyntaxReference?.GetSyntax() as AttributeSyntax;
             Location location = attrSyntax?.GetLocation() ?? Location.None;
@@ -165,7 +167,8 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
             var diag = Diagnostic.Create(
                 Diagnostics.MissingJsonFileDescriptor,
                 location,
-                path);
+                path,
+                dir);
             spc.ReportDiagnostic(diag);
         }
     }
@@ -177,10 +180,16 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
     Dictionary<string, object> dict,
     StringBuilder sb,
     StringBuilder sb2,
-    string separator = ".")
+    string separator,
+    bool camelCase)
     {
         if (dict == null || !dict.Any())
             return;
+
+        if(camelCase)
+        {
+            dict = dict.ToDictionary(kvp => char.ToUpper(kvp.Key[0]) + kvp.Key.Substring(1), kvp => kvp.Value);
+        }
 
         var allNodes = new List<string>();      // All top-level node names
         var endNodes = new List<string>();      // Nodes without children
@@ -191,7 +200,7 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
         foreach (var item in dict)
         {
             allNodes.Add(item.Key);
-            GenerateNodeDeclaration(item.Key, item.Value, sb, sb2, 2, item.Key, separator, endNodes, parentNodes, generatedClasses);
+            GenerateNodeDeclaration(item.Key, item.Value, sb, sb2, 2, item.Key, separator, camelCase, endNodes, parentNodes, generatedClasses);
         }
 
         sb.AppendLine();
@@ -255,6 +264,7 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
         int indentLevel,
         string path,
         string separator,
+        bool camelCase,
         List<string> endNodes,
         List<string> parentNodes,
         HashSet<string> generatedClasses)
@@ -263,6 +273,10 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
 
         if (value is Dictionary<string, object> dict && dict.Any())
         {
+            if (camelCase)
+            {
+                dict = dict.ToDictionary(kvp => char.ToUpper(kvp.Key[0]) + kvp.Key.Substring(1), kvp => kvp.Value);
+            }
             // Parent node with children - use object initializer
             parentNodes.Add(name);
             string className = path.Replace(separator, string.Empty);
@@ -402,8 +416,12 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
         else
         {
             endNodes.Add(name);
+
             var (_, valueString) = GetValueTypeAndLiteral(value);
-            GeneratePropertySummary(sb, value, path);
+            if (path == name) // Top-level node, include type and value in summary, child nodes have their summaries in their subclasses
+                GeneratePropertySummary(sb, value, path);
+
+            
             sb.AppendLine($"{indent}{name} = new(\"{path}\", {valueString}),");
         }
     }
@@ -425,7 +443,7 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
         if (l < int.MaxValue && l > int.MinValue)
             return ("int", l.ToString());
 
-        return ("long", $"{l}L");
+        return ("long", $"{l}");
     }
 
     private static string FormatDoubleLiteral(double value)

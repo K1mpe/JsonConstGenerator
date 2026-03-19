@@ -2,13 +2,20 @@
 
 namespace GeneratorTester
 {
-    [JsonConstGenerator("*.json")]
+    [JsonConstGenerator("example.json", "example2.json", UpperCamelCase = true)]
     public partial class MyConstants
     {
-        public static void Blub()
-        {
-            var x = Flags.IsEnabled;
+    }
 
+
+    public class Class2
+    {
+        public void Method2()
+        {
+            var x = MyConstants.Numbers.DecimalValue;
+            var y = MyConstants.FromSecondExample;
+
+            string[] permissions = MyConstants.Permissions;
         }
     }
 }

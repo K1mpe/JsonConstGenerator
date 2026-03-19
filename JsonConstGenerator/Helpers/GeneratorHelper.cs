@@ -30,5 +30,20 @@ namespace JsonConstGenerator.Helpers
 
             return string.Join(" ", modifiers);
         }
+
+        
+        public static T GetOptionalPropertyFromAttribute<T>(AttributeData attribute, string propertyName, T defaultValue)
+        {
+            // Look for the named argument "Seperator"
+            foreach (var namedArg in attribute.NamedArguments)
+            {
+                if (namedArg.Key == propertyName && namedArg.Value.Value is T value)
+                {
+                    return value;
+                }
+            }
+            // Default value
+            return defaultValue;
+        }
     }
 }
