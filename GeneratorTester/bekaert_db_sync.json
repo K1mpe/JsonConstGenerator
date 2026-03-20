@@ -1,0 +1,813 @@
+{
+    "_id": {
+        "timestamp": 1755540000,
+        "machine": 8388607,
+        "pid": 32767,
+        "increment": 1,
+        "creationTime": "2025-08-18T12:00:00Z"
+  },
+  "localDatabaseConfig": [
+    {
+      "dbId": "0",
+      "type": 6,
+      "address": "192.168.1.142",
+      "port": 5432,
+      "username": "postgres",
+      "password": "password",
+      "externalDb": false,
+      "custom": "",
+      "buckets": [
+        {
+          "id": "01A",
+          "dbName": "public",
+          "retentionName": "oneWeek",
+          "duration": "7d",
+          "important": false,
+          "custom": ""
+        },
+        {
+          "id": "02",
+          "dbName": "syncing",
+          "retentionName": "oneWeek",
+          "duration": "7d",
+          "important": false,
+          "custom": ""
+        }
+      ],
+      "name": "postgres",
+      "identifierOption": "SourcePath"
+    },
+    {
+      "dbId": "1",
+      "type": 7,
+      "address": "192.168.1.142",
+      "port": 5432,
+      "username": "postgres",
+      "password": "password",
+      "externalDb": false,
+      "custom": "",
+      "buckets": [
+        {
+          "id": "01",
+          "dbName": "syncing",
+          "retentionName": "oneWeek",
+          "duration": "7d",
+          "important": false,
+          "custom": ""
+        }
+      ],
+      "name": "postgres",
+      "identifierOption": "SourcePath"
+    }
+  ],
+  "collectorSettings": {
+    "global": {
+      "minStorageAvailable": 100,
+      "maxBufferPoints": 10000,
+      "writeTimeout": 5000,
+      "debugMode": true,
+      "fileLog": false,
+      "enabled": false,
+      "mirrorMode": false,
+      "timeOffsetInterval": 5000,
+      "enableMqtt": true,
+      "mqttEndpoint": "emqx.com.dev.vintecc.cloud",
+      "mirrorsettings": {
+        "type": 1,
+        "port": 4840,
+        "endpoint": "0.0.0.0",
+        "username": "jochen.deprez@vintecc.com",
+        "password": "uNC3oPl?vjMhyL3h1%58HPc4~fW2UU0{",
+        "model": "",
+        "custom": "",
+        "securityPolicies": [],
+        "clientCertificates": []
+      },
+      "adsRouterSettings": {
+        "enabled": false,
+        "localAmsNetId": "1.1.1.1.1.1",
+        "routes": []
+      }
+    },
+    "connections": [
+      {
+        "type": 19,
+        "address": "redis",
+        "requestDelay": 10,
+        "readCycleDelay": 100,
+        "byteSwap": false,
+        "targetDevice": "",
+        "port": 6379,
+        "cpuType": 0,
+        "rack": 0,
+        "slot": 0,
+        "appName": "",
+        "security": 0,
+        "useIpcTime": false,
+        "isTimeManager": false,
+        "tags": [
+          {
+            "name": "loggerActivationUid",
+            "defaultValue": "loggerActivationUid",
+            "readFromPlc": false,
+            "mapping": "",
+            "global": false,
+            "isCompanyTag": true,
+            "mirror": false,
+            "mirrorHistorize": false,
+            "mirrorHistorizeCount": 0,
+            "mirrorWrite": false,
+            "mirrorType": 1,
+            "cloudWrite": false,
+            "cloudRead": false,
+            "enabled": true,
+            "custom": ""
+          },
+          {
+            "name": "loggerIdentifier",
+            "defaultValue": "loggerIdentifier",
+            "readFromPlc": false,
+            "mapping": "",
+            "global": false,
+            "isCompanyTag": true,
+            "mirror": false,
+            "mirrorHistorize": false,
+            "mirrorHistorizeCount": 0,
+            "mirrorWrite": false,
+            "mirrorType": 1,
+            "cloudWrite": false,
+            "cloudRead": false,
+            "enabled": true,
+            "custom": ""
+          }
+        ],
+        "conditionTriggers": [],
+        "measurements": [
+          {
+            "name": "cdc_error_logs",
+            "downsampleTimespan": "250ms",
+            "downsampleMethod": "Mean",
+            "downsample": false,
+            "endpoints": [
+              {
+                "dbId": "1",
+                "bucketIdRp": "01",
+                "bucketIdDsRp": "01",
+                "custom": ""
+              }
+            ],
+            "variables": [
+              {
+                "name": "cdc_error_logs",
+                "parent": "",
+                "type": "auto",
+                "collectTypeId": 8,
+                "timer": 0,
+                "condition": "Always",
+                "mapping": "postgres.public.error_logs",
+                "downsampleTimespan": "1s",
+                "downsampleMethod": "Mean",
+                "downsample": false,
+                "mirror": false,
+                "mirrorType": 0,
+                "mirrorHistorize": false,
+                "mirrorHistorizeCount": 0,
+                "mirrorWrite": false,
+                "cloudWrite": false,
+                "cloudRead": false,
+                "useAsTag": false,
+                "enabled": true,
+                "defaultTagValue": "",
+                "mirrorBinding": "",
+                "custom": "",
+                "fieldName": null,
+                "fieldNamePrefix": null,
+                "addVariableSourceTag": false,
+                "addVariableSourceField": false,
+                "addMappingSourceTag": false,
+                "addMappingSourceField": false,
+                "id": 0
+              }
+            ],
+            "sync": true,
+            "analytics": false,
+            "analyticsTriggerIds": [],
+            "enabled": true,
+            "custom": "",
+            "syncDest": [
+              0
+            ]
+          },
+          {
+            "name": "cdc_report_info",
+            "downsampleTimespan": "250ms",
+            "downsampleMethod": "Mean",
+            "downsample": false,
+            "endpoints": [
+              {
+                "dbId": "1",
+                "bucketIdRp": "01",
+                "bucketIdDsRp": "01",
+                "custom": ""
+              }
+            ],
+            "variables": [
+              {
+                "name": "cdc_report_info",
+                "parent": "",
+                "type": "auto",
+                "collectTypeId": 8,
+                "timer": 0,
+                "condition": "Always",
+                "mapping": "postgres.public.report_info",
+                "downsampleTimespan": "1s",
+                "downsampleMethod": "Mean",
+                "downsample": false,
+                "mirror": false,
+                "mirrorType": 0,
+                "mirrorHistorize": false,
+                "mirrorHistorizeCount": 0,
+                "mirrorWrite": false,
+                "cloudWrite": false,
+                "cloudRead": false,
+                "useAsTag": false,
+                "enabled": true,
+                "defaultTagValue": "",
+                "mirrorBinding": "",
+                "custom": "",
+                "fieldName": null,
+                "fieldNamePrefix": null,
+                "addVariableSourceTag": false,
+                "addVariableSourceField": false,
+                "addMappingSourceTag": false,
+                "addMappingSourceField": false,
+                "id": 0
+              }
+            ],
+            "sync": true,
+            "analytics": false,
+            "analyticsTriggerIds": [],
+            "enabled": true,
+            "custom": "",
+            "syncDest": [
+              0
+            ]
+          },
+          {
+            "name": "cdc_report_details",
+            "downsampleTimespan": "250ms",
+            "downsampleMethod": "Mean",
+            "downsample": false,
+            "endpoints": [
+              {
+                "dbId": "1",
+                "bucketIdRp": "01",
+                "bucketIdDsRp": "01",
+                "custom": ""
+              }
+            ],
+            "variables": [
+              {
+                "name": "cdc_report_details",
+                "parent": "",
+                "type": "auto",
+                "collectTypeId": 8,
+                "timer": 0,
+                "condition": "Always",
+                "mapping": "postgres.public.report_details",
+                "downsampleTimespan": "1s",
+                "downsampleMethod": "Mean",
+                "downsample": false,
+                "mirror": false,
+                "mirrorType": 0,
+                "mirrorHistorize": false,
+                "mirrorHistorizeCount": 0,
+                "mirrorWrite": false,
+                "cloudWrite": false,
+                "cloudRead": false,
+                "useAsTag": false,
+                "enabled": true,
+                "defaultTagValue": "",
+                "mirrorBinding": "",
+                "custom": "",
+                "fieldName": null,
+                "fieldNamePrefix": null,
+                "addVariableSourceTag": false,
+                "addVariableSourceField": false,
+                "addMappingSourceTag": false,
+                "addMappingSourceField": false,
+                "id": 0
+              }
+            ],
+            "sync": true,
+            "analytics": false,
+            "analyticsTriggerIds": [],
+            "enabled": true,
+            "custom": "",
+            "syncDest": [
+              0
+            ]
+          }
+        ],
+        "name": "Redis_PubSub",
+        "custom": "",
+        "connectionId": 1,
+        "enabled": true,
+        "dbId": null,
+        "unitId": 1
+      },
+      {
+        "type": 7,
+        "address": "mqtt",
+        "requestDelay": 0,
+        "readCycleDelay": 0,
+        "byteSwap": false,
+        "targetDevice": "",
+        "port": 1883,
+        "cpuType": 0,
+        "rack": 0,
+        "slot": 0,
+        "appName": "",
+        "security": 0,
+        "useIpcTime": false,
+        "isTimeManager": false,
+        "tags": [
+          {
+            "name": "loggerActivationUid",
+            "defaultValue": "loggerActivationUid",
+            "readFromPlc": false,
+            "mapping": "",
+            "global": false,
+            "isCompanyTag": true,
+            "mirror": false,
+            "mirrorHistorize": false,
+            "mirrorHistorizeCount": 0,
+            "mirrorWrite": false,
+            "mirrorType": 1,
+            "cloudWrite": false,
+            "cloudRead": false,
+            "enabled": true,
+            "custom": ""
+          },
+          {
+            "name": "loggerIdentifier",
+            "defaultValue": "loggerIdentifier",
+            "readFromPlc": false,
+            "mapping": "",
+            "global": false,
+            "isCompanyTag": true,
+            "mirror": false,
+            "mirrorHistorize": false,
+            "mirrorHistorizeCount": 0,
+            "mirrorWrite": false,
+            "mirrorType": 1,
+            "cloudWrite": false,
+            "cloudRead": false,
+            "enabled": true,
+            "custom": ""
+          }
+        ],
+        "conditionTriggers": [],
+        "measurements": [
+          {
+            "name": "ImageSync",
+            "downsampleTimespan": "250ms",
+            "downsampleMethod": "Mean",
+            "downsample": false,
+            "endpoints": [
+              {
+                "dbId": "0",
+                "bucketIdRp": "02",
+                "bucketIdDsRp": "02",
+                "custom": ""
+              }
+            ],
+            "variables": [
+              {
+                "name": "image",
+                "parent": "",
+                "type": "auto",
+                "collectTypeId": 1,
+                "timer": 0,
+                "condition": "Always",
+                "mapping": "ui/image",
+                "downsampleTimespan": "1s",
+                "downsampleMethod": "Mean",
+                "downsample": false,
+                "mirror": false,
+                "mirrorType": 0,
+                "mirrorHistorize": false,
+                "mirrorHistorizeCount": 0,
+                "mirrorWrite": false,
+                "cloudWrite": false,
+                "cloudRead": false,
+                "useAsTag": false,
+                "enabled": true,
+                "defaultTagValue": "",
+                "mirrorBinding": "",
+                "custom": "",
+                "fieldName": null,
+                "fieldNamePrefix": null,
+                "addVariableSourceTag": false,
+                "addVariableSourceField": false,
+                "addMappingSourceTag": false,
+                "addMappingSourceField": false,
+                "id": 0
+              }
+            ],
+            "sync": true,
+            "analytics": false,
+            "analyticsTriggerIds": [],
+            "enabled": true,
+            "custom": "",
+            "syncDest": [
+              0
+            ]
+          }
+        ],
+        "name": "MQTT",
+        "custom": "",
+        "connectionId": 2,
+        "enabled": true,
+        "dbId": null,
+        "unitId": 1
+      }
+    ],
+    "writeToDbDelayMs": 0
+  },
+  "syncSettings": {
+    "syncDelay": 30,
+    "workers": 1,
+    "debugMode": true,
+    "enabled": true,
+    "syncDestinations": [
+      {
+        "destinationId": 0,
+        "type": 0,
+        "syncServer": "https://capture.dev.vintecc.cloud/api/data",
+        "authServer": "https://capture.dev.vintecc.cloud/auth",
+        "username": "",
+        "password": "",
+        "custom": "",
+        "pointsPerRequest": 10000,
+        "fieldsPointsRatio": 0,
+        "minPointsToSync": 1,
+        "minPointsMeasurementSwitch": 10000,
+        "retentionMeasurementSyncInfo": [
+          {
+            "dbId": "0",
+            "bucketId": "01A",
+            "extraSync": true,
+            "measurementList": [
+              "inspections",
+              "inspection_details",
+              "measure_configurations",
+              "inspection_images",
+              "inspection_measurements",
+              "rope_conditions",
+              "vision_defects",
+              "rotec",
+              "mrt_defects",
+              "inspection_calibrations"
+            ]
+          },
+          {
+            "dbId": "0",
+            "bucketId": "02",
+            "extraSync": false,
+            "measurementList": [
+              "ImageSync"
+            ]
+          },
+          {
+            "extraSync": false,
+            "dbId": "1",
+            "bucketId": "01",
+            "measurementList": [
+              "cdc_error_logs",
+              "cdc_report_info",
+              "cdc_report_details"
+            ]
+          }
+        ],
+        "syncRules": [],
+        "deleteFilesAfterSyncing": false
+      }
+    ],
+    "enhancePointsWithSyncTime": false
+  },
+  "analyticsSettings": {
+    "srcBucketId": "01A",
+    "dstBucketId": "01B",
+    "timeFrameBefore": 20000,
+    "timeFrameAfter": 20000,
+    "triggers": [],
+    "isBlacklist": false,
+    "measurements": [],
+    "detailName": "Alarm_",
+    "lastNotNull": false,
+    "enabled": true
+  },
+  "cloudManagerSettings": {
+    "updaterEndpoint": "https://capture.dev.vintecc.cloud/Updater",
+    "provisioningEndpoint": "https://capture.dev.vintecc.cloud/Provisioning",
+    "authEndpoint": "https://capture.dev.vintecc.cloud/auth",
+    "company": "Bekaert",
+    "cloudIdTag": "",
+    "configRefresh": 10000,
+    "varTypes": [
+      {
+        "id": 14,
+        "name": "auto",
+        "plcTypeId": 1
+      },
+      {
+        "id": 24,
+        "name": "auto",
+        "plcTypeId": 2
+      },
+      {
+        "id": 25,
+        "name": "auto",
+        "plcTypeId": 4
+      },
+      {
+        "id": 41,
+        "name": "auto",
+        "plcTypeId": 7
+      },
+      {
+        "id": 44,
+        "name": "auto",
+        "plcTypeId": 8
+      },
+      {
+        "id": 45,
+        "name": "auto",
+        "plcTypeId": 9
+      },
+      {
+        "id": 48,
+        "name": "auto",
+        "plcTypeId": 10
+      },
+      {
+        "id": 50,
+        "name": "auto",
+        "plcTypeId": 6
+      },
+      {
+        "id": 52,
+        "name": "NonFlattedArray",
+        "plcTypeId": 9
+      },
+      {
+        "id": 53,
+        "name": "NonFlattedStructArray",
+        "plcTypeId": 9
+      },
+      {
+        "id": 59,
+        "name": "auto",
+        "plcTypeId": 11
+      },
+      {
+        "id": 61,
+        "name": "auto",
+        "plcTypeId": 12
+      },
+      {
+        "id": 62,
+        "name": "NonFlattedArray",
+        "plcTypeId": 1
+      },
+      {
+        "id": 63,
+        "name": "NonFlattedStructArray",
+        "plcTypeId": 1
+      },
+      {
+        "id": 64,
+        "name": "json",
+        "plcTypeId": 4
+      },
+      {
+        "id": 65,
+        "name": "NestedObject",
+        "plcTypeId": 9
+      }
+    ],
+    "collectTypes": [
+      {
+        "id": 1,
+        "name": "On change"
+      },
+      {
+        "id": 2,
+        "name": "Timer"
+      },
+      {
+        "id": 3,
+        "name": "On increment"
+      },
+      {
+        "id": 4,
+        "name": "On decrement"
+      },
+      {
+        "id": 5,
+        "name": "On follow"
+      },
+      {
+        "id": 6,
+        "name": "Hybrid"
+      },
+      {
+        "id": 7,
+        "name": "Mirror"
+      },
+      {
+        "id": 8,
+        "name": "Any value"
+      }
+    ],
+    "dwnSampleMethods": [
+      {
+        "id": 1,
+        "name": "Mean"
+      },
+      {
+        "id": 2,
+        "name": "Sum"
+      },
+      {
+        "id": 3,
+        "name": "First"
+      },
+      {
+        "id": 4,
+        "name": "Last"
+      },
+      {
+        "id": 5,
+        "name": "Min"
+      },
+      {
+        "id": 6,
+        "name": "Max"
+      },
+      {
+        "id": 7,
+        "name": "Count"
+      },
+      {
+        "id": 8,
+        "name": "Mode"
+      },
+      {
+        "id": 9,
+        "name": "Median"
+      },
+      {
+        "id": 10,
+        "name": "Integral"
+      }
+    ],
+    "cpuTypes": [
+      {
+        "id": 1,
+        "name": "S7-200"
+      },
+      {
+        "id": 2,
+        "name": "S7-300"
+      },
+      {
+        "id": 3,
+        "name": "S7-400"
+      },
+      {
+        "id": 4,
+        "name": "S7-1200"
+      },
+      {
+        "id": 5,
+        "name": "S7-1500"
+      }
+    ],
+    "plcTypes": [
+      {
+        "id": 0,
+        "name": "ADS new lib (BETA)"
+      },
+      {
+        "id": 1,
+        "name": "S7"
+      },
+      {
+        "id": 3,
+        "name": "OPCUA"
+      },
+      {
+        "id": 5,
+        "name": "CAN"
+      },
+      {
+        "id": 6,
+        "name": "UDP_1"
+      },
+      {
+        "id": 7,
+        "name": "MQTT"
+      },
+      {
+        "id": 8,
+        "name": "ADS (STABLE)"
+      },
+      {
+        "id": 9,
+        "name": "GPS"
+      },
+      {
+        "id": 10,
+        "name": "MODBUS"
+      },
+      {
+        "id": 11,
+        "name": "OPCDA"
+      },
+      {
+        "id": 12,
+        "name": "Axotec I/O"
+      },
+      {
+        "id": 13,
+        "name": "ADS HEX"
+      },
+      {
+        "id": 14,
+        "name": "Redis_pubSub"
+      },
+      {
+        "id": 15,
+        "name": "Redis_keyValue"
+      },
+      {
+        "id": 16,
+        "name": "Http"
+      },
+      {
+        "id": 17,
+        "name": "Prometheus"
+      },
+      {
+        "id": 18,
+        "name": "Kafka"
+      },
+      {
+        "id": 19,
+        "name": "Redis_streams"
+      }
+    ],
+    "mirrorTypes": [
+      {
+        "id": 1,
+        "name": "OPC UA"
+      },
+      {
+        "id": 2,
+        "name": "MQTT"
+      },
+      {
+        "id": 3,
+        "name": "Redis"
+      }
+    ]
+  },
+  "id": 3497,
+  "name": "Bekaert_DB_SYNC",
+  "gatewayName": null,
+  "company": {
+    "id": 3961,
+    "name": "Bekaert"
+  },
+  "configTags": null,
+  "edgeBusSettings": {
+    "edgeBusConnections": [
+      {
+        "isEnabled": true,
+        "id": "EdgeBusConnection1",
+        "type": "Mqtt",
+        "address": "mqtt",
+        "port": 1883,
+        "username": "",
+        "password": "",
+        "useTls": false,
+        "allowUntrustedCertificates": false,
+        "databaseId": 0,
+        "useRedisJson": false
+      }
+    ],
+    "maximumMessageSize": 10485760
+  }
+}

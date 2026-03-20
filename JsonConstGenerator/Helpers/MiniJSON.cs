@@ -29,6 +29,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -328,7 +329,7 @@ namespace MiniJSON
                 }
 
                 double parsedDouble;
-                Double.TryParse(number, out parsedDouble);
+                Double.TryParse(number, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out parsedDouble);
                 return parsedDouble;
             }
 

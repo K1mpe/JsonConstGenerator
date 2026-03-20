@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace JsonConstGenerator.Helpers
 {
@@ -15,7 +17,7 @@ namespace JsonConstGenerator.Helpers
         /// </summary>
         /// <param name="filePaths">Absolute paths to JSON files</param>
         /// <returns>Merged dictionary</returns>
-        public static Dictionary<string, object> MergeJsonFiles(IEnumerable<string> filePaths)
+        public static Dictionary<string, object> MergeJsonFiles(IEnumerable<string> filePaths, SourceProductionContext spc, AttributeData attributeData)
         {
             var merged = new Dictionary<string, object>();
 
@@ -29,13 +31,19 @@ namespace JsonConstGenerator.Helpers
                 }
                 catch
                 {
-                    // optionally report missing file or read error elsewhere
                     continue;
                 }
-
+                var deserialised = MiniJSON.Json.Deserialize(jsonText);
                 // parse JSON using MiniJSON
-                if (MiniJSON.Json.Deserialize(jsonText) is not Dictionary<string, object> dict)
+                if (deserialised is not Dictionary<string, object> dict)
                 {
+                    var attrSyntax = attributeData.ApplicationSyntaxReference?.GetSyntax() as AttributeSyntax;
+                    Location location = attrSyntax?.GetLocation() ?? Location.None;
+
+                    spc.ReportDiagnostic(Diagnostic.Create(
+                        Diagnostics.JsonParseError,
+                        location,
+                        file));
                     // optionally report invalid JSON
                     continue;
                 }
@@ -69,5 +77,4 @@ namespace JsonConstGenerator.Helpers
             }
         }
     }
-}
 }

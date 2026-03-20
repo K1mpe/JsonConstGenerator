@@ -1,0 +1,24 @@
+{
+  "Numbers": {
+    "IntValue": 42,
+    "LargeIntValue": 5000000000,
+    "DecimalValue": 7.1415
+  },
+  "Strings": {
+    "Greeting": "Hello world",
+    "a": {
+      "b": {
+        "c": "Nested value"
+      }
+    }
+  },
+  "Flags": {
+    "IsEnabled": true
+  },
+  "EmptyObject": {},
+  "NullValue": null,
+  "EmptyArray": [],
+  "Permissions": {
+    "Companies": [ "Read", "Write", "Delete" ]
+  }
+}

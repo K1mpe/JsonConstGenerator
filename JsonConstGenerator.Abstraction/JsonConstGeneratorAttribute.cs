@@ -14,6 +14,7 @@ namespace JsonConstGenerator
             FilePaths = filepaths;
         }
         public string[] FilePaths { get; set; }
-        public string Seperator { get; set; } = ".";
+        public string Separator { get; set; } = ".";
+        public bool UpperCamelCase { get; set; } = false;
     }
 }
