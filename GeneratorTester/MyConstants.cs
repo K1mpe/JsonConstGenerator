@@ -6,6 +6,9 @@ namespace GeneratorTester
     public partial class MyConstants
     {
 
+        private void Method()
+        {
+        }
     }
 
 
