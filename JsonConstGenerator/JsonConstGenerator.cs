@@ -72,17 +72,16 @@ internal class JsonConstIncrementalGenerator : IIncrementalGenerator
         var seperator = GeneratorHelper.GetOptionalPropertyFromAttribute(input.Attribute, "Separator", ".");
         var camelCase = GeneratorHelper.GetOptionalPropertyFromAttribute(input.Attribute, "UpperCamelCase", false);
 
-        var projectDir = Path.GetDirectoryName(input.ClassSymbol.ContainingAssembly.Locations.FirstOrDefault()?.SourceTree?.FilePath)
-                 ?? Directory.GetCurrentDirectory();
+        var fileDir = Path.GetDirectoryName(input.ClassSyntax.SyntaxTree.FilePath);
 
         var fileNames = input.Attribute.ConstructorArguments.Length > 0
             ? input.Attribute.ConstructorArguments[0].Values.Select(v => v.Value?.ToString() ?? "").ToArray()
             : Array.Empty<string>();
 
 
-        var filePaths = GetJsonFilePaths(input, fileNames, spc, projectDir);
+        var filePaths = GetJsonFilePaths(input, fileNames, spc, fileDir);
 
-        var relativePaths = filePaths.Select(fp => fp.Substring(projectDir.Length+1)).ToArray();
+        var relativePaths = filePaths.Select(fp => fp.Substring(fileDir.Length+1)).ToArray();
 
         //if (!Debugger.IsAttached) Debugger.Launch();
         var dict = JsonMerger.MergeJsonFiles(filePaths, spc, input.Attribute);

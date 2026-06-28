@@ -5,7 +5,12 @@
     "DecimalValue": 7.1415
   },
   "Strings": {
-    "Greeting": "Hello world"
+    "Greeting": "Hello world",
+    "a": {
+      "b": {
+        "c": "Nested value"
+      }
+    }
   },
   "Flags": {
     "IsEnabled": true
@@ -13,5 +18,7 @@
   "EmptyObject": {},
   "NullValue": null,
   "EmptyArray": [],
-  "Permissions": [ "Read", "Write", "Delete" ]
+  "Permissions": {
+    "Companies": [ "Read", "Write", "Delete" ]
+  }
 }
