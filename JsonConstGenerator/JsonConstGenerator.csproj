@@ -9,6 +9,11 @@
 		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
 		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\Generated</CompilerGeneratedFilesOutputPath>
 		<IsRoslynComponent>true</IsRoslynComponent>
+
+		<!-- Pack the generator DLL as an analyzer, not a normal lib reference, so
+		     consumers get it as a compiler component instead of an assembly reference. -->
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<NoWarn>$(NoWarn);NU5128</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -37,7 +42,15 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" Version="4.13.0" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\JsonConstGenerator.Abstraction\JsonConstGenerator.Abstraction.csproj" />
+	  <ProjectReference Include="..\JsonConstGenerator.Abstraction\JsonConstGenerator.Abstraction.csproj" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- JsonConstGenerator.Abstraction is not packable/published on its own (IsPackable=false);
+		     its build output is bundled here as a normal lib reference so consumer code can resolve
+		     JsonConstGeneratorAttribute, IConstNode, ValueConstNode<T>, etc. from a single package install. -->
+		<None Include="$(OutputPath)\JsonConstGenerator.Abstraction.dll" Pack="true" PackagePath="lib/netstandard2.0" Visible="false" />
+		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 	</ItemGroup>
 </Project>
 

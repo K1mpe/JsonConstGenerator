@@ -21,11 +21,6 @@ namespace GeneratorTester
 
 
             var a = MyConstants.Permissions.Companies.Read;
-
-
-            var b = MyConstants.CollectorSettings.Global.Enabled.NodePath;
-
-            var c = MyConstants.GetNodeValue<bool>(b);
         }
 
     }
